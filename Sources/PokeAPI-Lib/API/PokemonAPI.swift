@@ -9,11 +9,11 @@ import Foundation
 
 enum PokemonAPI : API {
     
-    case root
+    case paginated
     
     var path: String {
         switch self {
-        case .root: return "/pokemon/"
+        case .paginated: return "/pokemon/"
         }
     }
 }
