@@ -7,19 +7,20 @@
 
 import Foundation
 
-class Http {
+public class Http {
     
-    func get(url: URL,
-             parameters: [String: String] = [:],
-             headers: [String: String] = [:],
-             completion: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    func get(url: URL, parameters: [String: String] = [:], headers: [String: String] = [:]) async -> Result<(Data, URLResponse), Error> {
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = HTTPMethod.get.rawValue
         
         // TODO: Add query params to URL
         
-        let task = URLSession.shared.dataTask(with: urlRequest, completionHandler: completion)
-        task.resume()
+        do {
+            let response = try await URLSession.shared.data(for: urlRequest)
+            return .success(response)
+        } catch let e {
+            return .failure(e)
+        }
     }
 }

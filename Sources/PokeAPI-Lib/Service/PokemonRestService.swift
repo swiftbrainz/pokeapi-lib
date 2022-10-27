@@ -7,28 +7,48 @@
 
 import Foundation
 
-class PokemonRestService: PokemonService {
+public class PokemonRestService: PokemonService {
     
     var http: Http
+    
+    enum PokemonRestServiceError: Error {
+        case couldNotDecode(value: Any)
+    }
+    
+    public init() {
+        self.http = Http()
+    }
     
     init(http: Http) {
         self.http = http
     }
     
-    func getPokemonPaginated(offset: Int, limit: Int, completion: @escaping (_ res: PaginatedResult<PokemonSnapshot>?, Error?) -> Void) {
+    func getPokemonPaginated(offset: Int, limit: Int) async -> Result<PaginatedResult<[PokemonSnapshot]>, Error> {
         let api = PokemonAPI.paginated
         let url = api.basePath.appendingPathExtension(api.path)
         let params = [
             "offset": "\(offset)",
             "limit": "\(limit)"
         ]
-        self.http.get(url: url,
-                      parameters: params) {_,_,_ in 
-            completion(nil, nil)
+        
+        let response = await self.http.get(url: url, parameters: params)
+        switch response {
+        case .success(let (data, _)):
+            let decoder = JSONDecoder()
+            do {
+                let paginated: PaginatedResult<[PokemonSnapshot]> = try decoder.decode(PaginatedResult<[PokemonSnapshot]>.self, from: data)
+                return .success(paginated)
+            }
+            catch let err {
+                return .failure(err)
+            }
+            
+        case .failure(let err):
+            return .failure(err)
         }
     }
     
-    func getPokemon(name: String, completion: @escaping () -> Void) {
+    func getPokemon(name: String) {
         
     }
 }
