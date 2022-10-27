@@ -7,8 +7,16 @@
 
 import Foundation
 
-struct PokemonSnapshot: Decodable {
+public struct PokemonSnapshot: Decodable {
     
-    var name: String
-    var url: String
+    public var name: String
+    public var url: String
+}
+
+extension PokemonSnapshot: Hashable {
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(url)
+    }
 }

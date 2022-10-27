@@ -13,7 +13,7 @@ enum PokemonAPI : API {
     
     var path: String {
         switch self {
-        case .paginated: return "/pokemon/"
+        case .paginated: return "/pokemon"
         }
     }
 }

@@ -19,13 +19,14 @@ public class PokemonRestService: PokemonService {
         self.http = Http()
     }
     
-    init(http: Http) {
+    public init(http: Http) {
         self.http = http
     }
     
-    func getPokemonPaginated(offset: Int, limit: Int) async -> Result<PaginatedResult<[PokemonSnapshot]>, Error> {
+    public func getPokemonPaginated(offset: Int, limit: Int) async -> Result<PaginatedResult<PokemonSnapshot>, Error> {
         let api = PokemonAPI.paginated
-        let url = api.basePath.appendingPathExtension(api.path)
+        let url = api.basePath.appending(path: api.path)
+        print(url)
         let params = [
             "offset": "\(offset)",
             "limit": "\(limit)"
@@ -36,7 +37,7 @@ public class PokemonRestService: PokemonService {
         case .success(let (data, _)):
             let decoder = JSONDecoder()
             do {
-                let paginated: PaginatedResult<[PokemonSnapshot]> = try decoder.decode(PaginatedResult<[PokemonSnapshot]>.self, from: data)
+                let paginated: PaginatedResult<PokemonSnapshot> = try decoder.decode(PaginatedResult<PokemonSnapshot>.self, from: data)
                 return .success(paginated)
             }
             catch let err {

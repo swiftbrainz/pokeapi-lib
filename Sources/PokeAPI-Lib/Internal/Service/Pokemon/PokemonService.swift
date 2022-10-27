@@ -9,6 +9,6 @@ import Foundation
 
 protocol PokemonService: Service {
     
-    func getPokemonPaginated(offset: Int, limit: Int) async -> Result<PaginatedResult<[PokemonSnapshot]>, Error>
+    func getPokemonPaginated(offset: Int, limit: Int) async -> Result<PaginatedResult<PokemonSnapshot>, Error>
     func getPokemon(name: String)
 }
